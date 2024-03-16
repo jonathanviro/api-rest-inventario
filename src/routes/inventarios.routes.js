@@ -4,7 +4,9 @@ import { createInventario, updateInventario, getInventarios, getStock, generarRe
 const router = Router();
 
 router.post("/inventarios", createInventario);
-router.patch("/inventarios", updateInventario);
+// router.patch("/inventarios", updateInventario);
+router.patch("/inventarios/:idInventario", updateInventario);
+
 router.get("/inventarios", getInventarios);
 router.get("/inventarios/stock", getStock);
 router.get("/inventarios/reporte", generarReporte)

@@ -56,53 +56,93 @@ export const createInventario = async (req, res) => {
   }
 };
 
+// export const updateInventario = async (req, res) => {
+//   try {
+//     const parametros = req.body;
+//     log(`Parametros: ${JSON.stringify(parametros)}`);
+
+//     const { esCerrado, usuarioModificacion, tipoJuego, fecha } = parametros;
+//     const client = await pool.connect();
+
+//     try {
+//       await client.query("BEGIN");
+      
+//       const lstInventario = await getInventarioByFecha(res, fecha, tipoJuego, 'S', 'N');
+//       for (const { id_inventario, codigo_local, codigo_producto, cantidad_consumida, cantidad_restante } of lstInventario) {
+//         const queryUpdateInventario = {
+//           text: `UPDATE inventarios SET
+//                         cantidad_consumida = $1,
+//                         cantidad_cierre = $2,
+//                         es_cerrado = $3, 
+//                         usuario_modificacion = $4, 
+//                         fecha_modificacion = CURRENT_TIMESTAMP 
+//                   WHERE id_inventario = $5
+//                     AND codigo_local = $6
+//                     AND tipo_juego = $7
+//                     AND codigo_producto = $8
+//                     AND DATE(fecha_ingreso) = $9
+//                     AND es_activo = 'S' 
+//                     AND es_cerrado = 'N'`,
+//           values: [ cantidad_consumida, cantidad_restante, esCerrado, usuarioModificacion, id_inventario, codigo_local, tipoJuego, codigo_producto, fecha ],
+//         };
+
+//         await client.query(queryUpdateInventario);
+
+//         const queryUpdateConsumos = {
+//           text: `UPDATE consumos SET
+//                         es_cerrado = $1, 
+//                         usuario_modificacion = $2, 
+//                         fecha_modificacion = CURRENT_TIMESTAMP 
+//                   WHERE id_inventario = $3
+//                     AND tipo_juego = $4
+//                     AND DATE(fecha_ingreso) = $5
+//                     AND es_activo = 'S' 
+//                     AND es_cerrado = 'N'`,
+//           values: [ esCerrado, usuarioModificacion, id_inventario, tipoJuego, fecha ],
+//         };
+
+//         await client.query(queryUpdateConsumos);
+//       };
+
+//       await client.query("COMMIT");
+
+//       return sendSuccess(res, "Inventario actualizado exitosamente");
+//     } catch (error) {
+//       await client.query("ROLLBACK");
+//       return sendError(res, `Error al actualizar inventario: ${error}`);
+//     } finally {
+//       client.release();
+//     }
+//   } catch (error) {
+//     return sendError(res, `Error Sistema: ${ error }`);
+//   }
+// };
+
 export const updateInventario = async (req, res) => {
   try {
+    const { idInventario } = req.params;
     const parametros = req.body;
     log(`Parametros: ${JSON.stringify(parametros)}`);
 
-    const { esCerrado, usuarioModificacion, tipoJuego, fecha } = parametros;
+    const { nombreProducto, cantidadIngreso, usuarioIngreso } = parametros;
     const client = await pool.connect();
 
     try {
       await client.query("BEGIN");
       
-      const lstInventario = await getInventarioByFecha(res, fecha, tipoJuego, 'S', 'N');
-      for (const { id_inventario, codigo_local, codigo_producto, cantidad_consumida, cantidad_restante } of lstInventario) {
+      
         const queryUpdateInventario = {
           text: `UPDATE inventarios SET
-                        cantidad_consumida = $1,
-                        cantidad_cierre = $2,
-                        es_cerrado = $3, 
-                        usuario_modificacion = $4, 
+                        nombre_producto = $1,
+                        cantidad_ingreso = $2,
+                        usuario_ingreso = $3, 
                         fecha_modificacion = CURRENT_TIMESTAMP 
-                  WHERE id_inventario = $5
-                    AND codigo_local = $6
-                    AND tipo_juego = $7
-                    AND codigo_producto = $8
-                    AND DATE(fecha_ingreso) = $9
-                    AND es_activo = 'S' 
-                    AND es_cerrado = 'N'`,
-          values: [ cantidad_consumida, cantidad_restante, esCerrado, usuarioModificacion, id_inventario, codigo_local, tipoJuego, codigo_producto, fecha ],
+                  WHERE id_inventario = $4`,
+          values: [ nombreProducto, cantidadIngreso, usuarioIngreso, idInventario ],
         };
 
         await client.query(queryUpdateInventario);
-
-        const queryUpdateConsumos = {
-          text: `UPDATE consumos SET
-                        es_cerrado = $1, 
-                        usuario_modificacion = $2, 
-                        fecha_modificacion = CURRENT_TIMESTAMP 
-                  WHERE id_inventario = $3
-                    AND tipo_juego = $4
-                    AND DATE(fecha_ingreso) = $5
-                    AND es_activo = 'S' 
-                    AND es_cerrado = 'N'`,
-          values: [ esCerrado, usuarioModificacion, id_inventario, tipoJuego, fecha ],
-        };
-
-        await client.query(queryUpdateConsumos);
-      };
+    
 
       await client.query("COMMIT");
 
