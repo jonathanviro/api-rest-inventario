@@ -8,7 +8,8 @@ import generateExcel from '../helpers/generateExcel.js';
 export const createInventario = async (req, res) => {
   try {
     const inventario = req.body;
-    const { codigoLocal } = await getSystemParams();
+    // const { codigoLocal } = await getSystemParams();
+    const { codigoLocal } = 'T0001';
 
     log(`Inventario: ${JSON.stringify(inventario)}`);
 
