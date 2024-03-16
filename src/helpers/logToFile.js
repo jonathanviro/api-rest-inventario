@@ -20,7 +20,9 @@ const logToFile = async (message) => {
         // };
         // const timestamp = now.toLocaleString('es-ES', options);
         // const logMessage = `${timestamp}: ${message}\n`;
-        console.log(logMessage)
+        // console.log(logMessage)
+        console.log(message)
+
 
         // await fs.promises.access(logFilePath, fs.constants.F_OK)
         //     .catch(async () => {
