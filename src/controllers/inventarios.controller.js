@@ -9,7 +9,7 @@ export const createInventario = async (req, res) => {
   try {
     const inventario = req.body;
     // const { codigoLocal } = await getSystemParams();
-    const { codigoLocal } = 'T0001';
+    const codigoLocal  = 'T0001';
 
     log(`Inventario: ${JSON.stringify(inventario)}`);
 
